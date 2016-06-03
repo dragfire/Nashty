@@ -1,0 +1,24 @@
+{
+  "name": "nashty",
+  "version": "1.0.0",
+  "description": "Real time chat app that allows you to monitor and chat with visitors on your website or app.",
+  "main": "app.js",
+  "scripts": {
+    "test": "mocha test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dragfire/nashty.git"
+  },
+  "keywords": [
+    "nodejs",
+    "socket",
+    "chat"
+  ],
+  "author": "dragfire",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dragfire/nashty/issues"
+  },
+  "homepage": "https://github.com/dragfire/nashty#readme"
+}
