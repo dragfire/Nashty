@@ -4,6 +4,7 @@
   "description": "Real time chat app that allows you to monitor and chat with visitors on your website or app.",
   "main": "app.js",
   "scripts": {
+    "start": "node bin/www",
     "test": "mocha test"
   },
   "repository": {
@@ -20,5 +21,13 @@
   "bugs": {
     "url": "https://github.com/dragfire/nashty/issues"
   },
-  "homepage": "https://github.com/dragfire/nashty#readme"
+  "homepage": "https://github.com/dragfire/nashty#readme",
+  "dependencies": {
+    "async": "^2.0.0-rc.5",
+    "debug": "^2.2.0",
+    "express": "^4.13.4",
+    "express-session": "^1.13.0",
+    "mongoose": "^4.4.19",
+    "socket.io": "^1.4.6"
+  }
 }

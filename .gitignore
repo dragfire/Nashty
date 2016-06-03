@@ -1,2 +1,4 @@
 /materialize/materialize
 .git
+/node_modules
+.idea
