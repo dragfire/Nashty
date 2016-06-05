@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Nashty</title>
+    <%include ../partials/styles%>
+    <% include ../partials/head-react-js %>
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        body, html {
+            height:100%;
+        }
+
+        #nashty-app {
+            width:100%;
+            height:100%;
+        }
+        .app {
+            width:100%;
+        }
+
+        .outline {
+            float: left;
+            /*min-height: 500px;*/
+            height: 100%;
+        }
+
+        .sidebar {
+            width: 25%;
+            background-color: #00bcd4;
+            padding: 0 5px;
+        }
+
+        .mainView {
+            width: 75%;
+        }
+    </style>
+</head>
+<body>
+<div id="nashty-app"></div>
+<script type="text/babel">
+    $(function () {
+        var App = React.createClass({
+            render: function () {
+                return (
+                        <div className="app outline">
+                            <SideBar />
+                            <MainView />
+                        </div>
+                );
+            }
+        });
+
+        var SideBar = React.createClass({
+            render: function () {
+                return (
+                        <div className="sidebar navbar outline teal accent-4 z-depth-2">
+                            <CardPanel>NASHTY</CardPanel>
+                            <NavButtons/>
+                        </div>
+                );
+            }
+        });
+
+        var MainView = React.createClass({
+            render: function () {
+                return (
+                        <div className="mainView outline">
+                            <MainViewContainer />
+                        </div>
+                );
+            }
+        });
+
+        var MainViewContainer = React.createClass({
+            render: function () {
+                return (
+                        <div className="container">
+                            <small>Container</small>
+                        </div>
+                );
+            }
+        });
+
+        var NavButtons = React.createClass({
+            render: function () {
+                return (
+                        <div className="collection">
+                            <NavButton href="/inbox">Inbox</NavButton>
+                            <NavButton href="/inbox">Users Online</NavButton>
+                            <NavButton href="/inbox">Chats</NavButton>
+                            <NavButton href="/inbox">Admins</NavButton>
+                        </div>
+                )
+            }
+        });
+
+        var NavButton = React.createClass({
+            render: function () {
+                return (
+                        <a href={this.props.href} className="collection-item">{this.props.children}</a>
+                );
+            }
+        });
+
+        var CardPanel = React.createClass({
+            render: function () {
+                return (
+                        <div className={"card-panel "+ this.props.color+" "+this.props.accent+" "+this.props.textColor}>
+                            {this.props.children}
+                        </div>
+                );
+            }
+        });
+
+        ReactDOM.render(<App />, document.getElementById('nashty-app'));
+    });
+
+</script>
+</body>
+</html>
