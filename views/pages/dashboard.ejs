@@ -38,6 +38,11 @@
         .mainView {
             width: 75%;
         }
+
+        .container {
+            width: 100%;
+            padding: 0 50px;
+        }
     </style>
 </head>
 <body>
@@ -61,6 +66,7 @@
                         <div className="sidebar navbar outline teal accent-4 z-depth-2">
                             <CardPanel>NASHTY</CardPanel>
                             <NavButtons/>
+                            <button className="waves-effect waves-light btn pink accent-3">Logout</button>
                         </div>
                 );
             }
@@ -79,7 +85,7 @@
         var MainViewContainer = React.createClass({
             render: function () {
                 return (
-                        <div className="container">
+                        <div className="container teal lighten-3">
                             <small>Container</small>
                         </div>
                 );
@@ -116,6 +122,14 @@
                 );
             }
         });
+
+        var Button = React.createClass({
+            render: function () {
+                return (
+                        <button>{this.props.children}</button>
+                )
+            }
+        })
 
         ReactDOM.render(<App />, document.getElementById('nashty-app'));
     });
