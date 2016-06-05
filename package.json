@@ -24,10 +24,15 @@
   "homepage": "https://github.com/dragfire/nashty#readme",
   "dependencies": {
     "async": "^2.0.0-rc.5",
+    "body-parser": "^1.15.1",
+    "compression": "^1.6.2",
+    "cookie-parser": "^1.4.3",
     "debug": "^2.2.0",
+    "ejs": "^2.4.2",
     "express": "^4.13.4",
     "express-session": "^1.13.0",
     "mongoose": "^4.4.19",
+    "nodemailer": "^2.4.2",
     "socket.io": "^1.4.6"
   }
 }
