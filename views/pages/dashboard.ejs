@@ -5,6 +5,8 @@
     <title>Nashty</title>
     <%include ../partials/styles%>
     <% include ../partials/head-react-js %>
+    <script src="/libs/js/socket.io.js"></script>
+    <script src="/js/nashty.admin.socketio.js"></script>
     <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
     <style>
         * {
@@ -43,10 +45,56 @@
             width: 100%;
             padding: 0 50px;
         }
+        .nash-chat-board {
+            margin: 0 auto;
+            position: relative;
+            width: 80%;
+            height: 400px;
+            border: 1px solid red;
+        }
+
+        .nash-inputs {
+            width: 100%;
+            text-align: center;
+            position: absolute;
+            bottom: 0;
+            border: 1px solid green;
+        }
+
+        .nash-content {
+            border: 1px solid blue;
+            height: 80%;
+            padding: 10px;
+        }
+
+        .msg.sent {
+            color: #0b97c4;
+            float: left;
+            border: 1px solid crimson;
+        }
+
+        .msg.received {
+            color: slateblue;
+            float: right;
+            border: 1px solid darkgoldenrod;
+        }
+
+        #nash-message {
+            width: 70%;
+        }
+
+        .clear {
+            clear: both;
+        }
+
+        .title {
+            text-align: center;
+        }
     </style>
 </head>
 <body>
 <div id="nashty-app"></div>
+<script type="text/babel" src="/components/chat.js"></script>
 <script type="text/babel">
     $(function () {
         var App = React.createClass({
@@ -85,8 +133,9 @@
         var MainViewContainer = React.createClass({
             render: function () {
                 return (
-                        <div className="container teal lighten-3">
+                        <div className="container lighten-3">
                             <small>Container</small>
+                            <ChatApp />
                         </div>
                 );
             }
