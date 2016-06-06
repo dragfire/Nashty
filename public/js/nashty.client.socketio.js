@@ -4,8 +4,8 @@ var $adminMsg =$('.msg.received');
 var $textMsg = $('#nash-message');
 var $sendBtn = $('#nash-sendbtn');
 
-socket.emit('new user', {role: 'client', site: $('#company').val()});
+socket.emit('new client', {role: 'client', site: $('#company').val()});
 
-socket.on('user joined', function (data) {
-    console.log('user joined', data);
+socket.on('client joined', function (data) {
+    console.log('Client joined', data);
 });
