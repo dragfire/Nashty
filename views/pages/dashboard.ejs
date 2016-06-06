@@ -3,9 +3,10 @@
 <head>
     <meta charset="utf-8"/>
     <title>Nashty</title>
-    <%include ../partials/styles%>
+    <% include ../partials/styles %>
     <% include ../partials/head-react-js %>
     <script src="/libs/js/socket.io.js"></script>
+    <script src="/libs/materialize/js/materialize.min.js"></script>
     <script src="/js/nashty.admin.socketio.js"></script>
     <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
     <style>
@@ -13,16 +14,18 @@
             margin: 0;
             padding: 0;
         }
+
         body, html {
-            height:100%;
+            height: 100%;
         }
 
         #nashty-app {
-            width:100%;
-            height:100%;
+            width: 100%;
+            height: 100%;
         }
+
         .app {
-            width:100%;
+            width: 100%;
         }
 
         .outline {
@@ -32,19 +35,20 @@
         }
 
         .sidebar {
-            width: 25%;
+            width: 20%;
             background-color: #00bcd4;
             padding: 0 5px;
         }
 
         .mainView {
-            width: 75%;
+            width: 80%;
         }
 
         .container {
             width: 100%;
             padding: 0 50px;
         }
+
         .nash-chat-board {
             margin: 0 auto;
             position: relative;
@@ -108,6 +112,80 @@
             }
         });
 
+        var Collection = React.createClass({
+            render: function () {
+                return (
+                        <div className="collection">
+                            {this.props.children}
+                        </div>
+                )
+            }
+        });
+
+        var SocketClient = React.createClass({
+            render: function () {
+                return (
+                        <a className="collection-item" id={this.props.sid}>Socket ID: {this.props.sid}</a>
+                );
+            }
+        });
+
+
+        // Card
+        var CardContent = React.createClass({
+            render: function () {
+                return (
+                        <div className="card-content">
+                            <span className="card-title activator grey-text text-darken-4">{this.props.title}
+                                <i className="material-icons right">more_vert</i>
+                            </span>
+                            <Collection>
+                                <SocketClient sid="/#68a349_a"/>
+                                <SocketClient sid="/#68a349_a"/>
+                                <SocketClient sid="/#68a349_a"/>
+                                <SocketClient sid="/#68a349_a"/>
+                            </Collection>
+                        </div>
+                );
+            }
+        });
+
+        var CardReveal = React.createClass({
+            render: function () {
+                return (
+                        <div className="card-reveal">
+                            <span className="card-title grey-text text-darken-4">{this.props.title}
+                                <i className="material-icons right">close</i>
+                            </span>
+
+                            {this.props.children}
+
+                        </div>
+                );
+            }
+        });
+
+
+
+        var Card = React.createClass({
+            render: function () {
+                return (
+                        <div className="card" style={{height: 400+'px'}}>
+                            <CardContent href="#" title="Online Admins"/>
+                            <CardReveal title="Online Clients">
+                                <Collection>
+                                    <SocketClient sid="/#68a349_a"/>
+                                    <SocketClient sid="/#68a349_a"/>
+                                    <SocketClient sid="/#68a349_a"/>
+                                    <SocketClient sid="/#68a349_a"/>
+                                </Collection>
+                            </CardReveal>
+                        </div>
+                )
+            }
+        })
+
+        //Sidebar
         var SideBar = React.createClass({
             render: function () {
                 return (
@@ -115,11 +193,13 @@
                             <CardPanel>NASHTY</CardPanel>
                             <NavButtons/>
                             <button className="waves-effect waves-light btn pink accent-3">Logout</button>
+                            <Card />
                         </div>
                 );
             }
         });
 
+        //MainView
         var MainView = React.createClass({
             render: function () {
                 return (
@@ -141,12 +221,12 @@
             }
         });
 
+        // NavButtons
         var NavButtons = React.createClass({
             render: function () {
                 return (
                         <div className="collection">
                             <NavButton href="/inbox">Inbox</NavButton>
-                            <NavButton href="/inbox">Users Online</NavButton>
                             <NavButton href="/inbox">Chats</NavButton>
                             <NavButton href="/inbox">Admins</NavButton>
                         </div>
@@ -178,7 +258,7 @@
                         <button>{this.props.children}</button>
                 )
             }
-        })
+        });
 
         ReactDOM.render(<App />, document.getElementById('nashty-app'));
     });
