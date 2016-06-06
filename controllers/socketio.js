@@ -38,7 +38,7 @@ var sio = function (io) {
                 io.in(room).emit('client left', socket.id);
                 socket.leave(room);
             }
-            if (findRemove(admins[room], socket.id)) {
+            else if (findRemove(admins[room], socket.id)) {
                 debug('Admin left', socket.id);
                 io.in(room).emit('admin left', socket.id);
                 socket.leave(room);
