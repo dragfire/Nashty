@@ -4,6 +4,7 @@ export default class Card extends Component{
     render(){
         return (
             <div className="card" style={{height: this.props.height}}>
+                {this.props.children}
             </div>
         )
     }
