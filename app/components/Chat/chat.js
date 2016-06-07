@@ -35,12 +35,6 @@ var MessageText = React.createClass({
     }
 });
 
-var ClearFloat = React.createClass({
-    render: function () {
-        return (
-            <div className="clear"></div>
-        )
-    }
-});
 
-window.ChatApp = ChatApp;
+
+module.exports = ChatApp;
