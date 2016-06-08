@@ -1,17 +1,24 @@
 import React, {Component} from 'react'
 import {ClearFloat} from '../Utils'
+
+let socket;
 class ChatInputs extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.onSend = this.onSend.bind(this);
     }
 
-    onSend(){
+    onSend() {
         this.props.handleChange(this.refs.text.value);
+        this.newMessage();
     }
 
-    componentDidMount(){
+    componentDidMount() {
         console.log(this);
+    }
+
+    newMessage() {
+        socket.emit('admin:new message', {text: this.refs.text.value});
     }
 
     render() {
@@ -37,26 +44,34 @@ class MessageText extends Component {
 }
 
 export default class ChatApp extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
+        socket = props.socket;
         this.state = {chats: []};
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.messageCreated = this.messageCreated.bind(this);
+        socket.on('client:message created', this.messageCreated);
     }
 
-    handleInputChange(text){
-        console.log('HandleChange', text);
-        let type = 'received';
-        this.state.chats.push({text: text, type: type});
+    messageCreated(data) {
+        console.log('client:message created', this);
+        this.state.chats.push({text: data.text, type: 'received'});
         this.setState({chats: this.state.chats});
     }
 
+    handleInputChange(text) {
+        console.log('HandleChange', text);
+        let type = 'sent';
+        this.state.chats.push({text: text, type: type});
+        this.setState({chats: this.state.chats});
+    }
+    
     render() {
         let Chats = this.state.chats.map(chat => {
             return (
                 <MessageText key={Math.floor(Math.random()*1000000)} type={chat.type}>{chat.text}</MessageText>
             );
         });
-        console.log(Chats);
         return (
             <div className="nash-chat-board">
                 <div className="nash-content">

@@ -19,6 +19,11 @@ var sio = function (io) {
             debug('Clients', clients);
         });
 
+        socket.on('client:new message', function (data) {
+            debug('client:new message', data);
+            io.in(room).emit('client:message created', data);
+        });
+
         // Role: Admin
         socket.on('join admin', function (data) {
             if (!admins[room]) admins[room] = [];
@@ -28,6 +33,11 @@ var sio = function (io) {
             admins[room].push(user);
             io.in(data.site).emit('admin joined', {admins: admins[room]});
             debug('Admins', admins);
+        });
+
+        socket.on('admin:new message', function (data) {
+            debug('admin:new message', data);
+            io.in(room).emit('admin:message created', data);
         });
 
         //Handle Socket Disconnections
@@ -50,15 +60,14 @@ var sio = function (io) {
 
 var findRemove = function (jsonArray, value) {
     if (jsonArray) {
-        for(var i=0; i<jsonArray.length; i++) {
+        for (var i = 0; i < jsonArray.length; i++) {
             if (Object.keys(jsonArray[i])[0] === value) {
-                jsonArray.splice(i,1);
+                jsonArray.splice(i, 1);
                 return true;
             }
         }
         return false;
-    }
-    else {
+    } else {
         return false;
     }
 };

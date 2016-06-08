@@ -5,19 +5,22 @@ var BUILD_DIR = path.resolve(__dirname, 'public/js');
 var APP_DIR = path.resolve(__dirname, 'app');
 
 var config = {
-    entry: APP_DIR + '/index.js',
+    entry: [
+        APP_DIR + '/index.js'
+    ],
     output: {
-        path: BUILD_DIR,
-        filename: 'bundle.js'
+        path: BUILD_DIR, filename: 'bundle.js'
     },
-    module : {
-        loaders : [
-            {
-                test : /\.jsx?$/,
-                include : APP_DIR,
-                loader : 'babel'
-            }
-        ]
+    devServer: {
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
+        }
+    },
+    module: {
+        loaders: [{
+            test: /\.jsx?$/, include: APP_DIR, loaders: [ 'babel']
+        }]
     }
 };
 

@@ -2,6 +2,9 @@ import React, {Component} from 'react'
 import {MainView, MainViewContainer} from './Mainview'
 import ChatApp from './Chat'
 import Sidebar from './Sidebar'
+import io from 'socket.io-client'
+
+let socket = io('localhost:3000');
 
 //*****************
 //  App:
@@ -25,10 +28,10 @@ export default class App extends Component {
     render() {
         return (
             <div className="app outline">
-                <Sidebar/>
+                <Sidebar socket={socket}/>
                 <MainView>
                     <MainViewContainer>
-                        <ChatApp/>
+                        <ChatApp socket={socket}/>
                     </MainViewContainer>
                 </MainView>
             </div>

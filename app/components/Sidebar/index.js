@@ -2,14 +2,14 @@ import React, {Component} from  'react'
 import {Collection, CollectionItem} from '../Materialize/Collection'
 import CardPanel from  '../Materialize/CardPanel'
 import {Card, CardContent, CardReveal} from '../Materialize/Card'
-import io from 'socket.io-client'
 
-let socket = io('localhost:3000');
-
+let socket;
 //Sidebar
 export default class SideBar extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
+        console.log(props);
+        socket = props.socket;
         this.state = {data: {admins: [], clients: []}};
         this.joinAdmin();
         socket.on('admin joined', data => {
@@ -21,12 +21,12 @@ export default class SideBar extends Component {
             console.log('Client joined', data);
             this.setState({data: {admins: this.state.data.admins, clients: data.clients}});
         });
-    
+
         socket.on('admin left', data => {
             console.log('Admin left', data);
             this.setState({data: {admins: data.admins, clients: this.state.data.clients}});
         });
-    
+
         socket.on('client left', data => {
             console.log('Client left', data);
             this.setState({data: {admins: this.state.data.admins, clients: data.clients}});
@@ -60,9 +60,9 @@ export default class SideBar extends Component {
 
         return (
             <div className="sidebar navbar outline teal accent-4 z-depth-2">
-                <CardPanel>NASHTY</CardPanel>
+                <CardPanel>NASHTY DASHBOARD</CardPanel>
                 <Collection>
-                    <CollectionItem id="SocketId" href="#">Inbox</CollectionItem>
+                    <CollectionItem id="SocketId" href="#">Hello There</CollectionItem>
                     <CollectionItem id="SocketId" href="#">Users Online</CollectionItem>
                     <CollectionItem id="SocketId" href="#">Settings</CollectionItem>
                 </Collection>
