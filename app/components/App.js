@@ -18,13 +18,13 @@ export default class App extends Component {
     joinAdmin() {
         socket.emit('join admin', {role: 'admin', site: 'hayum'});
     }
-
     render() {
         return (
             <div className="app outline">
                 <Sidebar/>
                 <MainView>
                     <MainViewContainer>
+                        <ChatApp/>
                         <ChatApp/>
                     </MainViewContainer>
                 </MainView>
