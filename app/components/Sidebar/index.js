@@ -2,10 +2,62 @@ import React, {Component} from  'react'
 import {Collection, CollectionItem} from '../Materialize/Collection'
 import CardPanel from  '../Materialize/CardPanel'
 import {Card, CardContent, CardReveal} from '../Materialize/Card'
+import io from 'socket.io-client'
+
+let socket = io('localhost:3000');
 
 //Sidebar
 export default class SideBar extends Component {
+    constructor(props){
+        super(props);
+        this.state = {data: {admins: [], clients: []}};
+        this.joinAdmin();
+        socket.on('admin joined', data => {
+            console.log('Admin joined', data);
+            this.setState({data: {admins: data.admins, clients: this.state.data.clients}});
+        });
+
+        socket.on('client joined', data => {
+            console.log('Client joined', data);
+            this.setState({data: {admins: this.state.data.admins, clients: data.clients}});
+        });
+    
+        socket.on('admin left', data => {
+            console.log('Admin left', data);
+            this.setState({data: {admins: data.admins, clients: this.state.data.clients}});
+        });
+    
+        socket.on('client left', data => {
+            console.log('Client left', data);
+            this.setState({data: {admins: this.state.data.admins, clients: data.clients}});
+        });
+    }
+    
+    joinAdmin() {
+        socket.emit('join admin', {role: 'admin', site: 'hayum'});
+    }
+    
+    handleOnlineStatus(data) {
+        console.log('Data', data);
+    }
+    
     render() {
+        console.log(this.state.data, this.state.data.admins, this.state.data.clients);
+        let OnlineAdmins = this.state.data.admins.map(admin => {
+            admin = Object.keys(admin)[0];
+            console.log('Admin', admin);
+            return (
+                <CollectionItem id={admin} key={Math.random()} href={"#"+admin}> {admin}</CollectionItem>
+            )
+        });
+
+        let OnlineClients = this.state.data.clients.map(client => {
+            client = Object.keys(client)[0];
+            return (
+                <CollectionItem id={client} key={Math.random()} href={"#"+client}> {client}</CollectionItem>
+            )
+        });
+
         return (
             <div className="sidebar navbar outline teal accent-4 z-depth-2">
                 <CardPanel>NASHTY</CardPanel>
@@ -18,16 +70,12 @@ export default class SideBar extends Component {
                 <Card height="400px">
                     <CardContent title="Admins Online">
                         <Collection>
-                            <CollectionItem id="SocketId" href="#">Inbox</CollectionItem>
-                            <CollectionItem id="SocketId" href="#">Users Online</CollectionItem>
-                            <CollectionItem id="SocketId" href="#">Settings</CollectionItem>
+                            {OnlineAdmins}
                         </Collection>
                     </CardContent>
                     <CardReveal title="Clients Online">
                         <Collection>
-                            <CollectionItem id="SocketId" href="#">Inbox</CollectionItem>
-                            <CollectionItem id="SocketId" href="#">Users Online</CollectionItem>
-                            <CollectionItem id="SocketId" href="#">Settings</CollectionItem>
+                            {OnlineClients}
                         </Collection>
                     </CardReveal>
                 </Card>

@@ -14,8 +14,8 @@ var sio = function (io) {
             user[socket.id] = {occupied: false};
             debug(JSON.stringify(data, null, 2));
             socket.join(data.site);
-            io.in(data.site).emit('client joined', data);
             clients[room].push(user);
+            io.in(data.site).emit('client joined', {clients: clients[room]});
             debug('Clients', clients);
         });
 
@@ -25,8 +25,8 @@ var sio = function (io) {
             var user = {};
             user[socket.id] = {occupied: false};
             socket.join(data.site);
-            io.in(data.site).emit('admin joined', data);
             admins[room].push(user);
+            io.in(data.site).emit('admin joined', {admins: admins[room]});
             debug('Admins', admins);
         });
 
@@ -34,12 +34,12 @@ var sio = function (io) {
         socket.on('disconnect', function () {
             debug('Disconnecting', socket.id);
             if (findRemove(clients[room], socket.id)) {
-                debug('Client left', socket.id);
-                io.in(room).emit('client left', socket.id);
+                debug('Client left', clients[room]);
+                io.in(room).emit('client left', {clients: clients[room]});
                 socket.leave(room);
             } else if (findRemove(admins[room], socket.id)) {
-                debug('Admin left', socket.id);
-                io.in(room).emit('admin left', socket.id);
+                debug('Admin left', admins[room]);
+                io.in(room).emit('admin left', {admins: admins[room]});
                 socket.leave(room);
             }
             debug('Disconn::Admins', admins);
@@ -50,15 +50,17 @@ var sio = function (io) {
 
 var findRemove = function (jsonArray, value) {
     if (jsonArray) {
-        jsonArray.forEach(function (obj, idx, arr) {
-            if (Object.keys(obj)[0] === value) {
-                debug('Object Deleted', obj);
-                jsonArray.splice(idx, 1);
+        for(var i=0; i<jsonArray.length; i++) {
+            if (Object.keys(jsonArray[i])[0] === value) {
+                jsonArray.splice(i,1);
                 return true;
             }
-        });
+        }
+        return false;
     }
-    return false;
+    else {
+        return false;
+    }
 };
 
 module.exports = sio;
