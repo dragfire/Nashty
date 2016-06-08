@@ -3,3 +3,5 @@
 /node_modules
 .idea
 /tmp
+/public/js/bundle.js
+/public/js/bundle.js.map
