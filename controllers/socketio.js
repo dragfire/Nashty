@@ -10,7 +10,7 @@ var sio = function (io) {
         var user = {}
         // Role: Client
         socket.on('new client', function (data) {
-            if(!clients[room]) clients[room] = [];
+            if (!clients[room]) clients[room] = [];
             user[socket.id] = {occupied: false};
             debug(JSON.stringify(data, null, 2));
             socket.join(data.site);
@@ -21,13 +21,13 @@ var sio = function (io) {
 
         // Role: Admin
         socket.on('join admin', function (data) {
-            if(!admins[room]) admins[room] = [];
+            if (!admins[room]) admins[room] = [];
             var user = {};
             user[socket.id] = {occupied: false};
             socket.join(data.site);
             io.in(data.site).emit('admin joined', data);
             admins[room].push(user);
-            debug('Admins',admins);
+            debug('Admins', admins);
         });
 
         //Handle Socket Disconnections
@@ -37,8 +37,7 @@ var sio = function (io) {
                 debug('Client left', socket.id);
                 io.in(room).emit('client left', socket.id);
                 socket.leave(room);
-            }
-            else if (findRemove(admins[room], socket.id)) {
+            } else if (findRemove(admins[room], socket.id)) {
                 debug('Admin left', socket.id);
                 io.in(room).emit('admin left', socket.id);
                 socket.leave(room);
@@ -50,9 +49,9 @@ var sio = function (io) {
 };
 
 var findRemove = function (jsonArray, value) {
-    if(jsonArray) {
+    if (jsonArray) {
         jsonArray.forEach(function (obj, idx, arr) {
-            if(Object.keys(obj)[0] === value) {
+            if (Object.keys(obj)[0] === value) {
                 debug('Object Deleted', obj);
                 jsonArray.splice(idx, 1);
                 return true;
