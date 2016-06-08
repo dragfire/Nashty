@@ -2,5 +2,6 @@
 .git
 /node_modules
 .idea
-/public/js/bundle.js
-/public/js/bundle.js.map
+/public/dist/bundle.js.map
+/public/libs/materialize/fonts
+/public/libs/react
