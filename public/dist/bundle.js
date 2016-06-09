@@ -21187,7 +21187,6 @@
 	        _this3.state = { chats: [] };
 	        _this3.handleInputChange = _this3.handleInputChange.bind(_this3);
 	        _this3.messageCreated = _this3.messageCreated.bind(_this3);
-	        socket.on('client:message created', _this3.messageCreated);
 	        return _this3;
 	    }
 	
@@ -21334,11 +21333,13 @@
 	        socket.on('admin joined', function (data) {
 	            console.log('Admin joined', data);
 	            _this.setState({ data: { admins: data.admins, clients: _this.state.data.clients } });
+	            socket.emit('room:refresh status', { room: 'hayum' });
 	        });
 	
 	        socket.on('client joined', function (data) {
 	            console.log('Client joined', data);
 	            _this.setState({ data: { admins: _this.state.data.admins, clients: data.clients } });
+	            socket.emit('room:refresh status', { room: 'hayum' });
 	        });
 	
 	        socket.on('admin left', function (data) {
@@ -21349,6 +21350,10 @@
 	        socket.on('client left', function (data) {
 	            console.log('Client left', data);
 	            _this.setState({ data: { admins: _this.state.data.admins, clients: data.clients } });
+	        });
+	
+	        socket.on('room:got refresh status', function (data) {
+	            _this.setState({ data: { admins: data.admins, clients: data.clients } });
 	        });
 	        return _this;
 	    }
@@ -21402,7 +21407,7 @@
 	                    _react2.default.createElement(
 	                        _Collection.CollectionItem,
 	                        { id: 'SocketId', href: '#' },
-	                        'Hello There'
+	                        'Inbox'
 	                    ),
 	                    _react2.default.createElement(
 	                        _Collection.CollectionItem,
@@ -21425,20 +21430,20 @@
 	                    { height: '400px' },
 	                    _react2.default.createElement(
 	                        _Card.CardContent,
-	                        { title: 'Admins Online' },
-	                        _react2.default.createElement(
-	                            _Collection.Collection,
-	                            null,
-	                            OnlineAdmins
-	                        )
-	                    ),
-	                    _react2.default.createElement(
-	                        _Card.CardReveal,
 	                        { title: 'Clients Online' },
 	                        _react2.default.createElement(
 	                            _Collection.Collection,
 	                            null,
 	                            OnlineClients
+	                        )
+	                    ),
+	                    _react2.default.createElement(
+	                        _Card.CardReveal,
+	                        { title: 'Admins Online' },
+	                        _react2.default.createElement(
+	                            _Collection.Collection,
+	                            null,
+	                            OnlineAdmins
 	                        )
 	                    )
 	                )

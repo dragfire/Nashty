@@ -24,6 +24,11 @@ var sio = function (io) {
             io.in(room).emit('client:message created', data);
         });
 
+        socket.on('room:refresh status', function (data) {
+            debug('room:refresh status', data);
+            socket.emit('room:got refresh status', {admins: admins[data.room], clients: clients[data.room]});
+        });
+
         // Role: Admin
         socket.on('join admin', function (data) {
             if (!admins[room]) admins[room] = [];

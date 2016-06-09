@@ -15,11 +15,13 @@ export default class SideBar extends Component {
         socket.on('admin joined', data => {
             console.log('Admin joined', data);
             this.setState({data: {admins: data.admins, clients: this.state.data.clients}});
+            socket.emit('room:refresh status', {room: 'hayum'});
         });
 
         socket.on('client joined', data => {
             console.log('Client joined', data);
             this.setState({data: {admins: this.state.data.admins, clients: data.clients}});
+            socket.emit('room:refresh status', {room: 'hayum'});
         });
 
         socket.on('admin left', data => {
@@ -30,6 +32,10 @@ export default class SideBar extends Component {
         socket.on('client left', data => {
             console.log('Client left', data);
             this.setState({data: {admins: this.state.data.admins, clients: data.clients}});
+        });
+
+        socket.on('room:got refresh status', data => {
+            this.setState({data: {admins: data.admins, clients: data.clients}});
         });
     }
     
@@ -62,20 +68,20 @@ export default class SideBar extends Component {
             <div className="sidebar navbar outline teal accent-4 z-depth-2">
                 <CardPanel>NASHTY DASHBOARD</CardPanel>
                 <Collection>
-                    <CollectionItem id="SocketId" href="#">Hello There</CollectionItem>
+                    <CollectionItem id="SocketId" href="#">Inbox</CollectionItem>
                     <CollectionItem id="SocketId" href="#">Users Online</CollectionItem>
                     <CollectionItem id="SocketId" href="#">Settings</CollectionItem>
                 </Collection>
                 <button className="waves-effect waves-light btn pink accent-3">Logout</button>
                 <Card height="400px">
-                    <CardContent title="Admins Online">
-                        <Collection>
-                            {OnlineAdmins}
-                        </Collection>
-                    </CardContent>
-                    <CardReveal title="Clients Online">
+                    <CardContent title="Clients Online">
                         <Collection>
                             {OnlineClients}
+                        </Collection>
+                    </CardContent>
+                    <CardReveal title="Admins Online">
+                        <Collection>
+                            {OnlineAdmins}
                         </Collection>
                     </CardReveal>
                 </Card>

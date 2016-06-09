@@ -50,9 +50,8 @@ export default class ChatApp extends Component {
         this.state = {chats: []};
         this.handleInputChange = this.handleInputChange.bind(this);
         this.messageCreated = this.messageCreated.bind(this);
-        socket.on('client:message created', this.messageCreated);
     }
-
+    
     messageCreated(data) {
         console.log('client:message created', this);
         this.state.chats.push({text: data.text, type: 'received'});
