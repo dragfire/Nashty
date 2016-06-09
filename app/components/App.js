@@ -1,10 +1,11 @@
 import React, {Component} from 'react'
 import {MainView, MainViewContainer} from './Mainview'
+import {Link} from 'react-router'
+
 import ChatApp from './Chat'
 import Sidebar from './Sidebar'
-import io from 'socket.io-client'
+import {Collection, CollectionItem} from '../components/Materialize/Collection'
 
-let socket = io('localhost:3000');
 
 //*****************
 //  App:
@@ -20,18 +21,21 @@ let socket = io('localhost:3000');
 //         MainViewContainer:
 //              ChatApp
 
+
+
 export default class App extends Component {
     constructor(props) {
         super(props);
     }
 
     render() {
+        console.log(this.props);
         return (
             <div className="app outline">
-                <Sidebar socket={socket}/>
+                <Sidebar socket={this.props.route.socket}/>
                 <MainView>
-                    <MainViewContainer>
-                        <ChatApp socket={socket}/>
+                    <MainViewContainer socket={this.props.route.socket}>
+                        {this.props.children}
                     </MainViewContainer>
                 </MainView>
             </div>

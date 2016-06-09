@@ -46,12 +46,21 @@ class MessageText extends Component {
 export default class ChatApp extends Component {
     constructor(props) {
         super(props);
-        socket = props.socket;
+        console.log('Chat', this.props);
+        socket = this.props.route.socket;
         this.state = {chats: []};
         this.handleInputChange = this.handleInputChange.bind(this);
         this.messageCreated = this.messageCreated.bind(this);
     }
-    
+
+    refreshStatus(){
+        socket.emit('room:refresh status', {room: 'hayum'});
+    }
+
+    gotRefreshStatus(){
+        this.setState()
+    }
+
     messageCreated(data) {
         console.log('client:message created', this);
         this.state.chats.push({text: data.text, type: 'received'});
@@ -64,7 +73,7 @@ export default class ChatApp extends Component {
         this.state.chats.push({text: text, type: type});
         this.setState({chats: this.state.chats});
     }
-    
+
     render() {
         let Chats = this.state.chats.map(chat => {
             return (

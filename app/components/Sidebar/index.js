@@ -1,15 +1,18 @@
 import React, {Component} from  'react'
+import {Link} from 'react-router'
+
 import {Collection, CollectionItem} from '../Materialize/Collection'
 import CardPanel from  '../Materialize/CardPanel'
 import {Card, CardContent, CardReveal} from '../Materialize/Card'
+
 
 let socket;
 //Sidebar
 export default class SideBar extends Component {
     constructor(props) {
         super(props);
-        console.log(props);
-        socket = props.socket;
+        console.log('Socket Sidebar', this.props.socket);
+        socket = this.props.socket;
         this.state = {data: {admins: [], clients: []}};
         this.joinAdmin();
         socket.on('admin joined', data => {
@@ -38,7 +41,7 @@ export default class SideBar extends Component {
             this.setState({data: {admins: data.admins, clients: data.clients}});
         });
     }
-    
+
     joinAdmin() {
         socket.emit('join admin', {role: 'admin', site: 'hayum'});
     }
@@ -48,7 +51,9 @@ export default class SideBar extends Component {
     }
     
     render() {
-        console.log(this.state.data, this.state.data.admins, this.state.data.clients);
+        // console.log(this.state.data, this.state.data.admins, this.state.data.clients);
+        this.state.data.admins = this.state.data.admins || [];
+        this.state.data.clients = this.state.data.clients || [];
         let OnlineAdmins = this.state.data.admins.map(admin => {
             admin = Object.keys(admin)[0];
             console.log('Admin', admin);
@@ -64,13 +69,17 @@ export default class SideBar extends Component {
             )
         });
 
+        let style = {
+            color: 'red', fontWeight: 'bold'
+        };
+
         return (
             <div className="sidebar navbar outline teal accent-4 z-depth-2">
                 <CardPanel>NASHTY DASHBOARD</CardPanel>
                 <Collection>
-                    <CollectionItem id="SocketId" href="#">Inbox</CollectionItem>
-                    <CollectionItem id="SocketId" href="#">Users Online</CollectionItem>
-                    <CollectionItem id="SocketId" href="#">Settings</CollectionItem>
+                    <CollectionItem href="/inbox" activeStyle={style}>Inbox</CollectionItem>
+                    <CollectionItem href="/home" activeStyle={style}>Home</CollectionItem>
+                    <CollectionItem href="/chat" activeStyle={style}>Chat</CollectionItem>
                 </Collection>
                 <button className="waves-effect waves-light btn pink accent-3">Logout</button>
                 <Card height="400px">

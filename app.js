@@ -33,9 +33,6 @@ app.get('/', function (req, res, next) {
     res.render('index');
 });
 
-app.get('/dashboard', function (req, res) {
-    res.render('pages/dashboard');
-});
 
 
 module.exports = app;

@@ -65,15 +65,44 @@
 	
 	var _reactDom = __webpack_require__(/*! react-dom */ 39);
 	
+	var _reactRouter = __webpack_require__(/*! react-router */ 231);
+	
+	var _socket = __webpack_require__(/*! socket.io-client */ 184);
+	
+	var _socket2 = _interopRequireDefault(_socket);
+	
 	var _App = __webpack_require__(/*! ./components/App */ 169);
 	
 	var _App2 = _interopRequireDefault(_App);
 	
-	var _reactRouter = __webpack_require__(/*! react-router */ 231);
+	var _Home = __webpack_require__(/*! ./components/Home */ 293);
+	
+	var _Home2 = _interopRequireDefault(_Home);
+	
+	var _Inbox = __webpack_require__(/*! ./components/Inbox */ 292);
+	
+	var _Inbox2 = _interopRequireDefault(_Inbox);
+	
+	var _Chat = __webpack_require__(/*! ./components/Chat */ 173);
+	
+	var _Chat2 = _interopRequireDefault(_Chat);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	(0, _reactDom.render)(_react2.default.createElement(_App2.default, null), document.getElementById('nashty-app'));
+	var socket = (0, _socket2.default)('localhost:3000');
+	var Routes = _react2.default.createElement(
+	    _reactRouter.Router,
+	    { history: _reactRouter.hashHistory },
+	    _react2.default.createElement(
+	        _reactRouter.Route,
+	        { path: '/', socket: socket, component: _App2.default },
+	        _react2.default.createElement(_reactRouter.Route, { path: '/inbox', component: _Inbox2.default }),
+	        _react2.default.createElement(_reactRouter.Route, { path: '/home', component: _Home2.default }),
+	        _react2.default.createElement(_reactRouter.Route, { path: '/chat', socket: socket, component: _Chat2.default })
+	    )
+	);
+	
+	(0, _reactDom.render)(Routes, document.getElementById('nashty-app'));
 
 /***/ },
 /* 2 */
@@ -20865,6 +20894,8 @@
 	
 	var _Mainview = __webpack_require__(/*! ./Mainview */ 170);
 	
+	var _reactRouter = __webpack_require__(/*! react-router */ 231);
+	
 	var _Chat = __webpack_require__(/*! ./Chat */ 173);
 	
 	var _Chat2 = _interopRequireDefault(_Chat);
@@ -20873,9 +20904,7 @@
 	
 	var _Sidebar2 = _interopRequireDefault(_Sidebar);
 	
-	var _socket = __webpack_require__(/*! socket.io-client */ 184);
-	
-	var _socket2 = _interopRequireDefault(_socket);
+	var _Collection = __webpack_require__(/*! ../components/Materialize/Collection */ 176);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -20884,8 +20913,6 @@
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	var socket = (0, _socket2.default)('localhost:3000');
 	
 	//*****************
 	//  App:
@@ -20913,17 +20940,18 @@
 	    _createClass(App, [{
 	        key: 'render',
 	        value: function render() {
+	            console.log(this.props);
 	            return _react2.default.createElement(
 	                'div',
 	                { className: 'app outline' },
-	                _react2.default.createElement(_Sidebar2.default, { socket: socket }),
+	                _react2.default.createElement(_Sidebar2.default, { socket: this.props.route.socket }),
 	                _react2.default.createElement(
 	                    _Mainview.MainView,
 	                    null,
 	                    _react2.default.createElement(
 	                        _Mainview.MainViewContainer,
-	                        null,
-	                        _react2.default.createElement(_Chat2.default, { socket: socket })
+	                        { socket: this.props.route.socket },
+	                        this.props.children
 	                    )
 	                )
 	            );
@@ -21023,7 +21051,7 @@
   \******************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
@@ -21043,6 +21071,8 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
+	var socket = void 0;
+	
 	var MainViewContainer = function (_Component) {
 	    _inherits(MainViewContainer, _Component);
 	
@@ -21053,11 +21083,12 @@
 	    }
 	
 	    _createClass(MainViewContainer, [{
-	        key: "render",
+	        key: 'render',
 	        value: function render() {
+	            console.log('Socket MVC', this.props.socket.id);
 	            return _react2.default.createElement(
-	                "div",
-	                { className: "container lighten-3" },
+	                'div',
+	                { className: 'container lighten-3' },
 	                this.props.children
 	            );
 	        }
@@ -21183,7 +21214,8 @@
 	
 	        var _this3 = _possibleConstructorReturn(this, Object.getPrototypeOf(ChatApp).call(this, props));
 	
-	        socket = props.socket;
+	        console.log('Chat', _this3.props);
+	        socket = _this3.props.route.socket;
 	        _this3.state = { chats: [] };
 	        _this3.handleInputChange = _this3.handleInputChange.bind(_this3);
 	        _this3.messageCreated = _this3.messageCreated.bind(_this3);
@@ -21191,6 +21223,16 @@
 	    }
 	
 	    _createClass(ChatApp, [{
+	        key: 'refreshStatus',
+	        value: function refreshStatus() {
+	            socket.emit('room:refresh status', { room: 'hayum' });
+	        }
+	    }, {
+	        key: 'gotRefreshStatus',
+	        value: function gotRefreshStatus() {
+	            this.setState();
+	        }
+	    }, {
 	        key: 'messageCreated',
 	        value: function messageCreated(data) {
 	            console.log('client:message created', this);
@@ -21299,6 +21341,8 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
+	var _reactRouter = __webpack_require__(/*! react-router */ 231);
+	
 	var _Collection = __webpack_require__(/*! ../Materialize/Collection */ 176);
 	
 	var _CardPanel = __webpack_require__(/*! ../Materialize/CardPanel */ 179);
@@ -21326,8 +21370,8 @@
 	
 	        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(SideBar).call(this, props));
 	
-	        console.log(props);
-	        socket = props.socket;
+	        console.log('Socket Sidebar', _this.props.socket);
+	        socket = _this.props.socket;
 	        _this.state = { data: { admins: [], clients: [] } };
 	        _this.joinAdmin();
 	        socket.on('admin joined', function (data) {
@@ -21371,7 +21415,9 @@
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            console.log(this.state.data, this.state.data.admins, this.state.data.clients);
+	            // console.log(this.state.data, this.state.data.admins, this.state.data.clients);
+	            this.state.data.admins = this.state.data.admins || [];
+	            this.state.data.clients = this.state.data.clients || [];
 	            var OnlineAdmins = this.state.data.admins.map(function (admin) {
 	                admin = Object.keys(admin)[0];
 	                console.log('Admin', admin);
@@ -21393,6 +21439,10 @@
 	                );
 	            });
 	
+	            var style = {
+	                color: 'red', fontWeight: 'bold'
+	            };
+	
 	            return _react2.default.createElement(
 	                'div',
 	                { className: 'sidebar navbar outline teal accent-4 z-depth-2' },
@@ -21406,18 +21456,18 @@
 	                    null,
 	                    _react2.default.createElement(
 	                        _Collection.CollectionItem,
-	                        { id: 'SocketId', href: '#' },
+	                        { href: '/inbox', activeStyle: style },
 	                        'Inbox'
 	                    ),
 	                    _react2.default.createElement(
 	                        _Collection.CollectionItem,
-	                        { id: 'SocketId', href: '#' },
-	                        'Users Online'
+	                        { href: '/home', activeStyle: style },
+	                        'Home'
 	                    ),
 	                    _react2.default.createElement(
 	                        _Collection.CollectionItem,
-	                        { id: 'SocketId', href: '#' },
-	                        'Settings'
+	                        { href: '/chat', activeStyle: style },
+	                        'Chat'
 	                    )
 	                ),
 	                _react2.default.createElement(
@@ -21542,17 +21592,21 @@
   \*****************************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
+	
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
 	var _react = __webpack_require__(/*! react */ 2);
 	
 	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactRouter = __webpack_require__(/*! react-router */ 231);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -21572,11 +21626,11 @@
 	    }
 	
 	    _createClass(CollectionItem, [{
-	        key: "render",
+	        key: 'render',
 	        value: function render() {
 	            return _react2.default.createElement(
-	                "a",
-	                { className: "collection-item", href: this.props.href, id: this.props.id },
+	                _reactRouter.Link,
+	                _extends({}, this.props, { className: 'collection-item', id: this.props.id, to: this.props.href }),
 	                this.props.children
 	            );
 	        }
@@ -35107,6 +35161,125 @@
 	
 	exports.default = (0, _createRouterHistory2.default)(_createHashHistory2.default);
 	module.exports = exports['default'];
+
+/***/ },
+/* 292 */
+/*!***************************************!*\
+  !*** ./app/components/Inbox/index.js ***!
+  \***************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(/*! react */ 2);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var Inbox = function (_Component) {
+	    _inherits(Inbox, _Component);
+	
+	    function Inbox(props) {
+	        _classCallCheck(this, Inbox);
+	
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(Inbox).call(this, props));
+	    }
+	
+	    _createClass(Inbox, [{
+	        key: 'render',
+	        value: function render() {
+	            return _react2.default.createElement(
+	                'div',
+	                { style: { position: 'absolute' } },
+	                _react2.default.createElement(
+	                    'h1',
+	                    null,
+	                    'Showing Inbox'
+	                )
+	            );
+	        }
+	    }]);
+	
+	    return Inbox;
+	}(_react.Component);
+	
+	exports.default = Inbox;
+
+/***/ },
+/* 293 */
+/*!**************************************!*\
+  !*** ./app/components/Home/index.js ***!
+  \**************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(/*! react */ 2);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactRouter = __webpack_require__(/*! react-router */ 231);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var Home = function (_Component) {
+	    _inherits(Home, _Component);
+	
+	    function Home() {
+	        _classCallCheck(this, Home);
+	
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(Home).apply(this, arguments));
+	    }
+	
+	    _createClass(Home, [{
+	        key: 'render',
+	        value: function render() {
+	            return _react2.default.createElement(
+	                'div',
+	                null,
+	                _react2.default.createElement(
+	                    'h1',
+	                    null,
+	                    'NASHTY Chat Integration'
+	                ),
+	                _react2.default.createElement(
+	                    _reactRouter.Link,
+	                    { to: '/inbox' },
+	                    'Inbox'
+	                )
+	            );
+	        }
+	    }]);
+	
+	    return Home;
+	}(_react.Component);
+	
+	exports.default = Home;
 
 /***/ }
 /******/ ]);
