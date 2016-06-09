@@ -50,21 +50,15 @@ export default class ChatApp extends Component {
         socket = this.props.route.socket;
         this.state = {chats: []};
         this.handleInputChange = this.handleInputChange.bind(this);
-        this.messageCreated = this.messageCreated.bind(this);
+        socket.on('client:message created', data => {
+            console.log('client:message created', this);
+            this.state.chats.push({text: data.text, type: 'received'});
+            this.setState({chats: this.state.chats});
+        });
     }
 
     refreshStatus(){
         socket.emit('room:refresh status', {room: 'hayum'});
-    }
-
-    gotRefreshStatus(){
-        this.setState()
-    }
-
-    messageCreated(data) {
-        console.log('client:message created', this);
-        this.state.chats.push({text: data.text, type: 'received'});
-        this.setState({chats: this.state.chats});
     }
 
     handleInputChange(text) {

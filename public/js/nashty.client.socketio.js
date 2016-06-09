@@ -13,11 +13,11 @@ socket.on('client joined', function (data) {
 
 $sendBtn.click(function () {
     console.log('client:new message', {text: $textMsg.val()});
-    $nashContent.append('<div class="msg received">' + escape($textMsg.val()) + '</div><div class="clear"></div>');
+    $nashContent.append('<div class="msg sent">' + $textMsg.val() + '</div><div class="clear"></div>');
     socket.emit('client:new message', {text: $textMsg.val()});
 });
 
 socket.on('admin:message created', function (data) {
     console.log('admin:message created', data);
-    $nashContent.append('<div class="msg sent">' + escape(data.text) + '</div><div class="clear"></div>');
+    $nashContent.append('<div class="msg received">' + data.text + '</div><div class="clear"></div>');
 });

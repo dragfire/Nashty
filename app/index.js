@@ -13,7 +13,7 @@ let socket = io('localhost:3000');
 var Routes = (
     <Router history={hashHistory}>
         <Route path="/" socket={socket} component={App}>
-            <Route path="/inbox" component={Inbox}/>
+            <Route path="/inbox" socket={socket} component={Inbox}/>
             <Route path="/home" component={Home}/>
             <Route path="/chat" socket={socket} component={ChatApp}/>
         </Route>
