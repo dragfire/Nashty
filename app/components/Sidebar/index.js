@@ -1,4 +1,6 @@
 import React, {Component} from "react"
+import {Link} from 'react-router'
+
 import {Collection, CollectionItem} from "../Materialize/Collection"
 import CardPanel from "../Materialize/CardPanel"
 import {Card, CardContent, CardReveal} from "../Materialize/Card"
@@ -23,7 +25,7 @@ export default class SideBar extends Component {
             });
             socket.emit('room:refresh status', {room: 'hayum'});
         });
-
+        
         socket.on('client joined', data => {
             console.log('Client joined', data);
             this.state.data.inboxCount++;
@@ -80,14 +82,14 @@ export default class SideBar extends Component {
             admin = Object.keys(admin)[0];
             console.log('Admin', admin);
             return (
-                <CollectionItem id={admin} key={Math.random()} href={"#"+admin}> {admin}</CollectionItem>
+                <CollectionItem id={admin} key={Math.random()} to={"#"+admin}> {admin}</CollectionItem>
             )
         });
 
         let OnlineClients = this.state.data.clients.map(client => {
             client = Object.keys(client)[0];
             return (
-                <CollectionItem id={client} key={Math.random()} href={"#"+client}> {client}</CollectionItem>
+                <CollectionItem id={client} key={Math.random()} to={"#"+client}> {client}</CollectionItem>
             )
         });
 
@@ -99,12 +101,9 @@ export default class SideBar extends Component {
             <div className="sidebar navbar outline teal accent-4 z-depth-2">
                 <CardPanel>NASHTY DASHBOARD</CardPanel>
                 <Collection>
-                    <CollectionItem href="/inbox" activeStyle={style}>Inbox
-                        {this.state.data.inboxCount ? (
-                            <span className="new badge"> {this.state.data.inboxCount}</span>) : ''}
-                    </CollectionItem>
-                    <CollectionItem href="/home" activeStyle={style}>Home</CollectionItem>
-                    <CollectionItem href="/chat" activeStyle={style}>Chat</CollectionItem>
+                    <CollectionItem to="/home">Home</CollectionItem>
+                    <CollectionItem to="/inbox">Inbox</CollectionItem>
+                    <CollectionItem to="/chat">Chat</CollectionItem>
                 </Collection>
                 <button className="waves-effect waves-light btn pink accent-3">Logout</button>
                 <Card height="400px">
@@ -123,3 +122,10 @@ export default class SideBar extends Component {
         );
     }
 }
+
+// <Link to="/inbox" activeStyle={style}>Inbox
+//     {this.state.data.inboxCount ? (
+//         <span className="new badge"> {this.state.data.inboxCount}</span>) : ''}
+// </Link>
+// <Link to="/home" activeStyle={style}>Home</Link>
+// <Link to="/chat" activeStyle={style}>Chat</Link>
