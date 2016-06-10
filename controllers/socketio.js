@@ -1,4 +1,4 @@
-var debug = require('debug')('Nashty: Socket IO');
+var debug = require('debug')('Nashty:SIO');
 var clients;
 var admins;
 var sio = function (io) {

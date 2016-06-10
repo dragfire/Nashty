@@ -44,9 +44,10 @@ class MessageText extends Component {
 }
 
 export default class ChatApp extends Component {
+
     constructor(props) {
         super(props);
-        console.log('Chat', this.props);
+        console.log('ChatApp:', this.props);
         socket = this.props.route.socket;
         this.state = {chats: []};
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -67,10 +68,8 @@ export default class ChatApp extends Component {
         this.state.chats.push({text: text, type: type});
         this.setState({chats: this.state.chats});
     }
-
-    render() {
-        let Chats = this.state.chats.map(chat => {
-            return (
+render() {
+        let Chats = this.state.chats.map(chat => {        return (
                 <MessageText key={Math.floor(Math.random()*1000000)} type={chat.type}>{chat.text}</MessageText>
             );
         });
