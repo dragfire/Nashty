@@ -34389,6 +34389,7 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
 	var socket = void 0;
+	var socketid = void 0;
 	
 	var ChatInputs = function (_Component) {
 	    _inherits(ChatInputs, _Component);
@@ -34399,6 +34400,7 @@
 	        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ChatInputs).call(this, props));
 	
 	        _this.onSend = _this.onSend.bind(_this);
+	
 	        return _this;
 	    }
 	
@@ -34409,14 +34411,13 @@
 	            this.newMessage();
 	        }
 	    }, {
-	        key: 'componentDidMount',
-	        value: function componentDidMount() {
-	            console.log(this);
-	        }
-	    }, {
 	        key: 'newMessage',
 	        value: function newMessage() {
-	            socket.emit('admin:new message', { text: this.refs.text.value });
+	            if (socketid) {
+	                socket.emit('admin:new message', { sid: sid, text: this.refs.text.value });
+	            } else {
+	                socket.emit('admin:new message', { text: this.refs.text.value });
+	            }
 	        }
 	    }, {
 	        key: 'render',
@@ -34483,6 +34484,18 @@
 	            _this3.state.chats.push({ text: data.text, type: 'received' });
 	            _this3.setState({ chats: _this3.state.chats });
 	        });
+	        socketid = _this3.props.location.query.sid;
+	
+	        if (socketid) {
+	            console.log('Sending Admin Id to Client:', socket, socketid);
+	            socket.broadcast.to(socketid).emit('admin:assign admin', {
+	                sid: socket.id
+	            });
+	        }
+	
+	        socket.on('client:got admin', function (data) {
+	            console.log('client:got admin', data);
+	        });
 	        return _this3;
 	    }
 	
@@ -34502,6 +34515,9 @@
 	    }, {
 	        key: 'render',
 	        value: function render() {
+	
+	            console.log("Chat", this.props);
+	
 	            var Chats = this.state.chats.map(function (chat) {
 	                return _react2.default.createElement(
 	                    MessageText,
@@ -34581,7 +34597,7 @@
   \*****************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 	
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
@@ -34628,25 +34644,41 @@
 	        _this.joinAdmin();
 	        socket.on('admin joined', function (data) {
 	            console.log('Admin joined', data);
-	            _this.setState({ data: { admins: data.admins, clients: _this.state.data.clients, inboxCount: _this.state.data.inboxCount } });
+	            _this.setState({
+	                data: {
+	                    admins: data.admins, clients: _this.state.data.clients, inboxCount: _this.state.data.inboxCount
+	                }
+	            });
 	            socket.emit('room:refresh status', { room: 'hayum' });
 	        });
 	
 	        socket.on('client joined', function (data) {
 	            console.log('Client joined', data);
 	            _this.state.data.inboxCount++;
-	            _this.setState({ data: { admins: _this.state.data.admins, clients: data.clients, inboxCount: _this.state.data.inboxCount } });
+	            _this.setState({
+	                data: {
+	                    admins: _this.state.data.admins, clients: data.clients, inboxCount: _this.state.data.inboxCount
+	                }
+	            });
 	            socket.emit('room:refresh status', { room: 'hayum' });
 	        });
 	
 	        socket.on('admin left', function (data) {
 	            console.log('Admin left', data);
-	            _this.setState({ data: { admins: data.admins, clients: _this.state.data.clients, inboxCount: _this.state.data.inboxCount } });
+	            _this.setState({
+	                data: {
+	                    admins: data.admins, clients: _this.state.data.clients, inboxCount: _this.state.data.inboxCount
+	                }
+	            });
 	        });
 	
 	        socket.on('client left', function (data) {
 	            console.log('Client left', data);
-	            _this.setState({ data: { admins: _this.state.data.admins, clients: data.clients, inboxCount: --_this.state.data.inboxCount } });
+	            _this.setState({
+	                data: {
+	                    admins: _this.state.data.admins, clients: data.clients, inboxCount: --_this.state.data.inboxCount
+	                }
+	            });
 	        });
 	
 	        socket.on('room:got refresh status', function (data) {
@@ -34656,17 +34688,17 @@
 	    }
 	
 	    _createClass(SideBar, [{
-	        key: 'joinAdmin',
+	        key: "joinAdmin",
 	        value: function joinAdmin() {
 	            socket.emit('join admin', { role: 'admin', site: 'hayum' });
 	        }
 	    }, {
-	        key: 'handleOnlineStatus',
+	        key: "handleOnlineStatus",
 	        value: function handleOnlineStatus(data) {
 	            console.log('Data', data);
 	        }
 	    }, {
-	        key: 'render',
+	        key: "render",
 	        value: function render() {
 	            console.log('Sidebar Data', this.state.data);
 	            this.state.data.admins = this.state.data.admins || [];
@@ -34676,8 +34708,8 @@
 	                console.log('Admin', admin);
 	                return _react2.default.createElement(
 	                    _Collection.CollectionItem,
-	                    { id: admin, key: Math.random(), href: "#" + admin },
-	                    ' ',
+	                    { id: admin, key: Math.random(), to: "#" + admin },
+	                    " ",
 	                    admin
 	                );
 	            });
@@ -34686,8 +34718,9 @@
 	                client = Object.keys(client)[0];
 	                return _react2.default.createElement(
 	                    _Collection.CollectionItem,
-	                    { id: client, key: Math.random(), href: "#" + client },
-	                    ' ',
+	                    {
+	                        id: client, key: Math.random(),
+	                        to: { pathname: "/chat", query: { sid: client } } },
 	                    client
 	                );
 	            });
@@ -34697,49 +34730,49 @@
 	            };
 	
 	            return _react2.default.createElement(
-	                'div',
-	                { className: 'sidebar navbar outline teal accent-4 z-depth-2' },
+	                "div",
+	                { className: "sidebar navbar outline teal accent-4 z-depth-2" },
 	                _react2.default.createElement(
 	                    _CardPanel2.default,
 	                    null,
-	                    'NASHTY DASHBOARD'
+	                    "NASHTY DASHBOARD"
 	                ),
 	                _react2.default.createElement(
 	                    _Collection.Collection,
 	                    null,
 	                    _react2.default.createElement(
 	                        _Collection.CollectionItem,
-	                        { href: '/inbox', activeStyle: style },
-	                        'Inbox',
+	                        { to: "/inbox", activeStyle: style },
+	                        "Inbox",
 	                        this.state.data.inboxCount ? _react2.default.createElement(
-	                            'span',
-	                            { className: 'new badge' },
-	                            ' ',
+	                            "span",
+	                            { className: "new badge" },
+	                            " ",
 	                            this.state.data.inboxCount
 	                        ) : ''
 	                    ),
 	                    _react2.default.createElement(
 	                        _Collection.CollectionItem,
-	                        { href: '/home', activeStyle: style },
-	                        'Home'
+	                        { to: "/home", activeStyle: style },
+	                        "Home"
 	                    ),
 	                    _react2.default.createElement(
 	                        _Collection.CollectionItem,
-	                        { href: '/chat', activeStyle: style },
-	                        'Chat'
+	                        { to: "/chat", activeStyle: style },
+	                        "Chat"
 	                    )
 	                ),
 	                _react2.default.createElement(
-	                    'button',
-	                    { className: 'waves-effect waves-light btn pink accent-3' },
-	                    'Logout'
+	                    "button",
+	                    { className: "waves-effect waves-light btn pink accent-3" },
+	                    "Logout"
 	                ),
 	                _react2.default.createElement(
 	                    _Card.Card,
-	                    { height: '400px' },
+	                    { height: "400px" },
 	                    _react2.default.createElement(
 	                        _Card.CardContent,
-	                        { title: 'Clients Online' },
+	                        { title: "Clients Online" },
 	                        _react2.default.createElement(
 	                            _Collection.Collection,
 	                            null,
@@ -34748,7 +34781,7 @@
 	                    ),
 	                    _react2.default.createElement(
 	                        _Card.CardReveal,
-	                        { title: 'Admins Online' },
+	                        { title: "Admins Online" },
 	                        _react2.default.createElement(
 	                            _Collection.Collection,
 	                            null,
@@ -34887,11 +34920,17 @@
 	    _createClass(CollectionItem, [{
 	        key: 'render',
 	        value: function render() {
-	            return _react2.default.createElement(
+	            //console.log('CI:', this.props);
+	            var CItem = this.props.to ? _react2.default.createElement(
 	                _reactRouter.Link,
-	                _extends({}, this.props, { className: 'collection-item', id: this.props.id, to: this.props.href }),
+	                _extends({}, this.props, { className: 'collection-item' }),
+	                this.props.children
+	            ) : _react2.default.createElement(
+	                'a',
+	                _extends({}, this.props, { className: 'collection-item' }),
 	                this.props.children
 	            );
+	            return CItem;
 	        }
 	    }]);
 	

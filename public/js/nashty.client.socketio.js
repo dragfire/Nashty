@@ -11,6 +11,11 @@ socket.on('client joined', function (data) {
     console.log('Client joined', data);
 });
 
+socket.on('admin:assign admin', function (data) {
+    console.log("admin:assign admin", data);
+    socket.broadcast.to(data.sid).emit('client:got admin', data);
+});
+
 $sendBtn.click(function () {
     console.log('client:new message', {text: $textMsg.val()});
     $nashContent.append('<div class="msg sent">' + $textMsg.val() + '</div><div class="clear"></div>');

@@ -2,10 +2,13 @@ import React, {Component} from 'react'
 import {ClearFloat} from '../Utils'
 
 let socket;
+let socketid;
+
 class ChatInputs extends Component {
     constructor(props) {
         super(props);
         this.onSend = this.onSend.bind(this);
+
     }
 
     onSend() {
@@ -13,12 +16,12 @@ class ChatInputs extends Component {
         this.newMessage();
     }
 
-    componentDidMount() {
-        console.log(this);
-    }
-
     newMessage() {
-        socket.emit('admin:new message', {text: this.refs.text.value});
+        if(socketid){
+            socket.emit('admin:new message', {sid: sid, text: this.refs.text.value});
+        } else {
+            socket.emit('admin:new message', {text: this.refs.text.value});
+        }
     }
 
     render() {
@@ -56,9 +59,21 @@ export default class ChatApp extends Component {
             this.state.chats.push({text: data.text, type: 'received'});
             this.setState({chats: this.state.chats});
         });
+        socketid = this.props.location.query.sid;
+
+        if(socketid) {
+            console.log('Sending Admin Id to Client:', socket, socketid);
+            socket.emit('admin:assign admin', {
+                sid: socket.id
+            });
+        }
+
+        socket.on('client:got admin', function (data) {
+            console.log('client:got admin', data);
+        });
     }
 
-    refreshStatus(){
+    refreshStatus() {
         socket.emit('room:refresh status', {room: 'hayum'});
     }
 
@@ -68,8 +83,13 @@ export default class ChatApp extends Component {
         this.state.chats.push({text: text, type: type});
         this.setState({chats: this.state.chats});
     }
-render() {
-        let Chats = this.state.chats.map(chat => {        return (
+
+    render() {
+
+        console.log("Chat", this.props);
+
+        let Chats = this.state.chats.map(chat => {
+            return (
                 <MessageText key={Math.floor(Math.random()*1000000)} type={chat.type}>{chat.text}</MessageText>
             );
         });

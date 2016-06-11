@@ -18,9 +18,7 @@ export default class SideBar extends Component {
             console.log('Admin joined', data);
             this.setState({
                 data: {
-                    admins: data.admins,
-                    clients: this.state.data.clients,
-                    inboxCount: this.state.data.inboxCount
+                    admins: data.admins, clients: this.state.data.clients, inboxCount: this.state.data.inboxCount
                 }
             });
             socket.emit('room:refresh status', {room: 'hayum'});
@@ -31,9 +29,7 @@ export default class SideBar extends Component {
             this.state.data.inboxCount++;
             this.setState({
                 data: {
-                    admins: this.state.data.admins,
-                    clients: data.clients,
-                    inboxCount: this.state.data.inboxCount
+                    admins: this.state.data.admins, clients: data.clients, inboxCount: this.state.data.inboxCount
                 }
             });
             socket.emit('room:refresh status', {room: 'hayum'});
@@ -43,9 +39,7 @@ export default class SideBar extends Component {
             console.log('Admin left', data);
             this.setState({
                 data: {
-                    admins: data.admins,
-                    clients: this.state.data.clients,
-                    inboxCount: this.state.data.inboxCount
+                    admins: data.admins, clients: this.state.data.clients, inboxCount: this.state.data.inboxCount
                 }
             });
         });
@@ -54,9 +48,7 @@ export default class SideBar extends Component {
             console.log('Client left', data);
             this.setState({
                 data: {
-                    admins: this.state.data.admins,
-                    clients: data.clients,
-                    inboxCount: --this.state.data.inboxCount
+                    admins: this.state.data.admins, clients: data.clients, inboxCount: --this.state.data.inboxCount
                 }
             });
         });
@@ -89,7 +81,11 @@ export default class SideBar extends Component {
         let OnlineClients = this.state.data.clients.map(client => {
             client = Object.keys(client)[0];
             return (
-                <CollectionItem id={client} key={Math.random()} to={"#"+client}> {client}</CollectionItem>
+                <CollectionItem
+                    id={client} key={Math.random()}
+                    to={{pathname:"/chat", query: {sid: client}}}>
+                    {client}
+                </CollectionItem>
             )
         });
 
@@ -101,9 +97,12 @@ export default class SideBar extends Component {
             <div className="sidebar navbar outline teal accent-4 z-depth-2">
                 <CardPanel>NASHTY DASHBOARD</CardPanel>
                 <Collection>
-                    <CollectionItem to="/home">Home</CollectionItem>
-                    <CollectionItem to="/inbox">Inbox</CollectionItem>
-                    <CollectionItem to="/chat">Chat</CollectionItem>
+                    <CollectionItem to="/inbox" activeStyle={style}>Inbox
+                        {this.state.data.inboxCount ? (
+                            <span className="new badge"> {this.state.data.inboxCount}</span>) : ''}
+                    </CollectionItem>
+                    <CollectionItem to="/home" activeStyle={style}>Home</CollectionItem>
+                    <CollectionItem to="/chat" activeStyle={style}>Chat</CollectionItem>
                 </Collection>
                 <button className="waves-effect waves-light btn pink accent-3">Logout</button>
                 <Card height="400px">
@@ -123,9 +122,3 @@ export default class SideBar extends Component {
     }
 }
 
-// <Link to="/inbox" activeStyle={style}>Inbox
-//     {this.state.data.inboxCount ? (
-//         <span className="new badge"> {this.state.data.inboxCount}</span>) : ''}
-// </Link>
-// <Link to="/home" activeStyle={style}>Home</Link>
-// <Link to="/chat" activeStyle={style}>Chat</Link>

@@ -42,8 +42,14 @@ var sio = function (io) {
 
         socket.on('admin:new message', function (data) {
             debug('admin:new message', data);
-            io.in(room).emit('admin:message created', data);
+            if(data.sid) {
+                socket.setBroadcast.to(data.sid).emit('admin:message created', data);
+            } else {
+                io.in(room).emit('admin:message created', data);
+            }
         });
+        
+        
 
         //Handle Socket Disconnections
         socket.on('disconnect', function () {
