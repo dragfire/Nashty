@@ -64,12 +64,16 @@ export default class ChatApp extends Component {
         if(socketid) {
             console.log('Sending Admin Id to Client:', socket, socketid);
             socket.emit('admin:assign admin', {
-                sid: socket.id
+                sid: socketid
             });
         }
 
         socket.on('client:got admin', function (data) {
             console.log('client:got admin', data);
+        });
+
+        socket.on('admin:admin assigned', function (data) {
+            console.log('admin:admin assigned', data);
         });
     }
 

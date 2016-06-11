@@ -11,9 +11,9 @@ socket.on('client joined', function (data) {
     console.log('Client joined', data);
 });
 
-socket.on('admin:assign admin', function (data) {
-    console.log("admin:assign admin", data);
-    socket.broadcast.to(data.sid).emit('client:got admin', data);
+socket.on('client:assign admin', function (data) {
+    console.log("client:assign admin", data);
+    socket.emit('client:got admin', data);
 });
 
 $sendBtn.click(function () {

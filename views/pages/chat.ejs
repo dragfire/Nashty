@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Nash Chat</title>
+    <link rel="stylesheet" href="/css/index.css"/>
+</head>
+<body>
+<div class="nash-chat-board">
+    <p class="title">Nash Chat Client</p>
+    <div class="nash-content">
+    </div>
+    <div class="nash-inputs">
+        <input type="hidden" id="company" value="hayum">
+        <input type="text" id="nash-message" title="message"/>
+        <button id="nash-sendbtn">Send</button>
+    </div>
+</div>
+<script src="/libs/js/socket.io.js"></script>
+<script src="/libs/js/jquery.min.js"></script>
+<script src="/js/nashty.client.socketio.js"></script>
+</body>
+</html>

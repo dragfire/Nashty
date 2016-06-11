@@ -7,7 +7,10 @@ var sio = function (io) {
     admins = {};
     io.on('connection', function (socket) {
         debug(socket.id);
-        var user = {}
+        var user = {};
+
+        // Role: Global
+
         // Role: Client
         socket.on('new client', function (data) {
             if (!clients[room]) clients[room] = [];
@@ -29,6 +32,11 @@ var sio = function (io) {
             socket.emit('room:got refresh status', {admins: admins[data.room], clients: clients[data.room]});
         });
 
+        socket.on('client:got admin', function (data) {
+            debug('client:got admin', data);
+            socket.broadcast.to(data.sid).emit('admin:admin assigned', data);
+        });
+
         // Role: Admin
         socket.on('join admin', function (data) {
             if (!admins[room]) admins[room] = [];
@@ -42,14 +50,19 @@ var sio = function (io) {
 
         socket.on('admin:new message', function (data) {
             debug('admin:new message', data);
-            if(data.sid) {
+            if (data.sid) {
                 socket.setBroadcast.to(data.sid).emit('admin:message created', data);
             } else {
                 io.in(room).emit('admin:message created', data);
             }
         });
-        
-        
+
+        socket.on('admin:assign admin', function (data) {
+            socket.broadcast.to(data.sid).emit('client:assign admin', {
+                sid: socket.id
+            });
+        });
+
 
         //Handle Socket Disconnections
         socket.on('disconnect', function () {

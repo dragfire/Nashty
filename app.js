@@ -31,6 +31,10 @@ app.get('/', function(req, res, next) {
     res.render('index');
 });
 
+app.get('/client', function (req, res) {
+    res.render('pages/chat');
+});
+
 
 
 module.exports = app;
