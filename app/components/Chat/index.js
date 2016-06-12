@@ -8,7 +8,6 @@ class ChatInputs extends Component {
     constructor(props) {
         super(props);
         this.onSend = this.onSend.bind(this);
-
     }
 
     onSend() {
@@ -17,8 +16,8 @@ class ChatInputs extends Component {
     }
 
     newMessage() {
-        if(socketid){
-            socket.emit('admin:new message', {sid: sid, text: this.refs.text.value});
+        if (socketid) {
+            socket.emit('admin:new message', {sid: socketid, text: this.refs.text.value});
         } else {
             socket.emit('admin:new message', {text: this.refs.text.value});
         }
@@ -50,23 +49,20 @@ export default class ChatApp extends Component {
 
     constructor(props) {
         super(props);
-        console.log('ChatApp:', this.props);
+        console.log('ChatApp Constructor:', this.props);
         socket = this.props.route.socket;
-        this.state = {chats: []};
+        this.state = {chats: [], key: Math.random()};
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleStaticSocketEvents(); // Global Socket events
+        this.handleDynamicSocketEvents(this.props); // Client Socket Updates
+    }
+
+    handleStaticSocketEvents() {
         socket.on('client:message created', data => {
             console.log('client:message created', this);
             this.state.chats.push({text: data.text, type: 'received'});
-            this.setState({chats: this.state.chats});
+            this.setState({chats: this.state.chats, key: Math.random()});
         });
-        socketid = this.props.location.query.sid;
-
-        if(socketid) {
-            console.log('Sending Admin Id to Client:', socket, socketid);
-            socket.emit('admin:assign admin', {
-                sid: socketid
-            });
-        }
 
         socket.on('client:got admin', function (data) {
             console.log('client:got admin', data);
@@ -77,6 +73,25 @@ export default class ChatApp extends Component {
         });
     }
 
+    handleDynamicSocketEvents(props) {
+        socket = props.route.socket;
+        socketid = props.location.query.sid;
+        console.log('DynamicSocketEvents:', socket, socketid);
+
+        if (socketid) {
+            console.log('Sending Admin Id to Client:', socket, socketid);
+            socket.emit('admin:assign admin', {
+                sid: socketid
+            });
+        }
+    }
+
+    componentWillReceiveProps(newProps) {
+        console.log('New Props', newProps);
+        this.setState({chats: [], key: Math.random()});
+        this.handleDynamicSocketEvents(newProps);
+    }
+
     refreshStatus() {
         socket.emit('room:refresh status', {room: 'hayum'});
     }
@@ -85,20 +100,19 @@ export default class ChatApp extends Component {
         console.log('HandleChange', text);
         let type = 'sent';
         this.state.chats.push({text: text, type: type});
-        this.setState({chats: this.state.chats});
+        this.setState({chats: this.state.chats, key: this.state.key});
     }
 
     render() {
-
-        console.log("Chat", this.props);
 
         let Chats = this.state.chats.map(chat => {
             return (
                 <MessageText key={Math.floor(Math.random()*1000000)} type={chat.type}>{chat.text}</MessageText>
             );
         });
+
         return (
-            <div className="nash-chat-board">
+            <div className="nash-chat-board" key={this.state.key}>
                 <div className="nash-content">
                     {Chats}
                 </div>

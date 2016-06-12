@@ -4,6 +4,8 @@ var $nashContent = $('.nash-content');
 var $adminMsg = $('.msg.received');
 var $textMsg = $('#nash-message');
 var $sendBtn = $('#nash-sendbtn');
+var $adminSid = $('#admin-sid');
+var $msgBoardText = $('.msgboard > #msg');
 
 socket.emit('new client', {role: 'client', site: $('#company').val()});
 
@@ -13,13 +15,20 @@ socket.on('client joined', function (data) {
 
 socket.on('client:assign admin', function (data) {
     console.log("client:assign admin", data);
+    $adminSid.val(data.sid);
     socket.emit('client:got admin', data);
 });
 
 $sendBtn.click(function () {
-    console.log('client:new message', {text: $textMsg.val()});
+    console.log('client:new message', {sid: $adminSid.val(), text: $textMsg.val()});
+    
     $nashContent.append('<div class="msg sent">' + $textMsg.val() + '</div><div class="clear"></div>');
-    socket.emit('client:new message', {text: $textMsg.val()});
+    if ($adminSid.val()) {
+        $msgBoardText.text('Admin Socket ID: ' + $adminSid.val());
+        socket.emit('client:new message', {sid: $adminSid.val(), text: $textMsg.val()});
+    } else {
+        $msgBoardText.text('Unable to determine Admin Socket ID');
+    }
 });
 
 socket.on('admin:message created', function (data) {

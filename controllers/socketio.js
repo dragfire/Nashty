@@ -24,7 +24,11 @@ var sio = function (io) {
 
         socket.on('client:new message', function (data) {
             debug('client:new message', data);
-            io.in(room).emit('client:message created', data);
+            if (data.sid) {
+                socket.broadcast.to(data.sid).emit('client:message created', data);
+            } else {
+                io.to(room).emit('client:message created', data);
+            }
         });
 
         socket.on('room:refresh status', function (data) {
@@ -51,7 +55,7 @@ var sio = function (io) {
         socket.on('admin:new message', function (data) {
             debug('admin:new message', data);
             if (data.sid) {
-                socket.setBroadcast.to(data.sid).emit('admin:message created', data);
+                socket.broadcast.to(data.sid).emit('admin:message created', data);
             } else {
                 io.in(room).emit('admin:message created', data);
             }

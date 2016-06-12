@@ -34,7 +34,7 @@ export default class SideBar extends Component {
             });
             socket.emit('room:refresh status', {room: 'hayum'});
         });
-
+        
         socket.on('admin left', data => {
             console.log('Admin left', data);
             this.setState({
@@ -43,7 +43,7 @@ export default class SideBar extends Component {
                 }
             });
         });
-
+        
         socket.on('client left', data => {
             console.log('Client left', data);
             this.setState({
@@ -52,20 +52,20 @@ export default class SideBar extends Component {
                 }
             });
         });
-
+        
         socket.on('room:got refresh status', data => {
             this.setState({data: {admins: data.admins, clients: data.clients, inboxCount: this.state.data.inboxCount}});
         });
     }
-
+    
     joinAdmin() {
         socket.emit('join admin', {role: 'admin', site: 'hayum'});
     }
-
+    
     handleOnlineStatus(data) {
         console.log('Data', data);
     }
-
+    
     render() {
         console.log('Sidebar Data', this.state.data);
         this.state.data.admins = this.state.data.admins || [];
@@ -77,7 +77,7 @@ export default class SideBar extends Component {
                 <CollectionItem id={admin} key={Math.random()} to={"#"+admin}> {admin}</CollectionItem>
             )
         });
-
+        
         let OnlineClients = this.state.data.clients.map(client => {
             client = Object.keys(client)[0];
             return (
@@ -88,11 +88,11 @@ export default class SideBar extends Component {
                 </CollectionItem>
             )
         });
-
+        
         let style = {
             color: 'red', fontWeight: 'bold'
         };
-
+        
         return (
             <div className="sidebar navbar outline teal accent-4 z-depth-2">
                 <CardPanel>NASHTY DASHBOARD</CardPanel>
@@ -102,7 +102,7 @@ export default class SideBar extends Component {
                             <span className="new badge"> {this.state.data.inboxCount}</span>) : ''}
                     </CollectionItem>
                     <CollectionItem to="/home" activeStyle={style}>Home</CollectionItem>
-                    <CollectionItem to="/chat" activeStyle={style}>Chat</CollectionItem>
+                    <CollectionItem href="/client" target="_blank">Dummy Chat Client</CollectionItem>
                 </Collection>
                 <button className="waves-effect waves-light btn pink accent-3">Logout</button>
                 <Card height="400px">
