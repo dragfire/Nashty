@@ -19,6 +19,12 @@ socket.on('client:assign admin', function (data) {
     socket.emit('client:got admin', data);
 });
 
+socket.on('Client:admin left', function (data) {
+    console.log('Client:admin left', data);
+    $adminSid.val('');
+    socket.emit('Client:got admin left', {sid: data.admin});
+});
+
 $sendBtn.click(function () {
     console.log('client:new message', {sid: $adminSid.val(), text: $textMsg.val()});
     

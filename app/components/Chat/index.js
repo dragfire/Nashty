@@ -71,6 +71,10 @@ export default class ChatApp extends Component {
         socket.on('admin:admin assigned', function (data) {
             console.log('admin:admin assigned', data);
         });
+
+        socket.on('ChatApp:notified admin left', function (data) {
+            console.log('ChatApp:notified admin left', data);
+        });
     }
 
     handleDynamicSocketEvents(props) {
@@ -90,6 +94,7 @@ export default class ChatApp extends Component {
         console.log('New Props', newProps);
         this.setState({chats: [], key: Math.random()});
         this.handleDynamicSocketEvents(newProps);
+        socket.emit('ChatApp:admin left', {sid: this.props.location.query.sid});
     }
 
     refreshStatus() {

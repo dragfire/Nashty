@@ -11,6 +11,18 @@ var sio = function (io) {
 
         // Role: Global
 
+        socket.on('ChatApp:admin left', function (data) {
+            debug('ChatApp:admin left', data);
+            socket.broadcast.to(data.sid).emit('Client:admin left', {
+                admin: socket.id, sid: data.sid
+            });
+        });
+
+        socket.on('Client:got admin left', function (data) {
+            console.log('Client:got admin left', data);
+            socket.broadcast.to(data.sid).emit('ChatApp:notified admin left', data);
+        });
+
         // Role: Client
         socket.on('new client', function (data) {
             if (!clients[room]) clients[room] = [];
