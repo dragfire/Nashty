@@ -10,6 +10,7 @@ const INITIAL_STATE = {
         admin: ''
     }
 };
+
 export default function reducer(state = INITIAL_STATE, action) {
     switch (action.type) {
         case Type.ADD_CLIENT:
