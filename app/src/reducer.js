@@ -3,11 +3,11 @@ import * as Type from './actions/types'
 
 const INITIAL_STATE = {
     clients: [],
-    admins: [],
-    inbox: [],
-    active: {
+    admins : [],
+    inbox  : [],
+    active : {
         client: '',
-        admin: ''
+        admin : ''
     }
 };
 
@@ -38,7 +38,7 @@ export default function reducer(state = INITIAL_STATE, action) {
             return Object.assign({}, state, {
                 active: {
                     client: state.active.client,
-                    admin: action.id
+                    admin : action.id
                 }
             });
             break;
@@ -52,5 +52,5 @@ export default function reducer(state = INITIAL_STATE, action) {
         default:
             return state;
     }
-    
+
 }
