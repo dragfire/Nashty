@@ -37,6 +37,11 @@ export default function reducer(state = INITIAL_STATE, action) {
                 }
             });
             break;
+        case Type.ADD_INBOX:
+            return Object.assign({}, state, {
+                inbox: [...state.inbox, {id: action.id, text: action.text}]
+            });
+            break;
         default:
             return state;
     }
