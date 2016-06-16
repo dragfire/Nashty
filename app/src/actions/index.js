@@ -23,3 +23,11 @@ export let addActiveClient = socketid => {
         type: Type.ACTIVE_CLIENT, id: socketid
     };
 };
+
+export let addInbox = (socketid, text) => {
+    return {
+        type: Type.ADD_INBOX,
+        id: socketid,
+        text: text
+    };
+};

@@ -4,6 +4,7 @@ import * as Type from './actions/types'
 const INITIAL_STATE = {
     clients: [],
     admins: [],
+    inbox: [],
     active: {
         client: '',
         admin: ''
