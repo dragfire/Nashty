@@ -2,8 +2,11 @@ import * as Action from './actions'
 import * as Type from './actions/types'
 
 const INITIAL_STATE = {
-    clients: [], admins: [], active: {
-        client: '', admin: ''
+    clients: [],
+    admins: [],
+    active: {
+        client: '',
+        admin: ''
     }
 };
 export default function reducer(state = INITIAL_STATE, action) {
@@ -19,10 +22,21 @@ export default function reducer(state = INITIAL_STATE, action) {
             });
             break;
         case Type.ACTIVE_CLIENT:
-            return Object({}, state, {
+            return Object.assign({}, state, {
                 active: {
                     client: action.id
                 }
-            })
+            });
+            break;
+        case Type.ACTIVE_ADMIN:
+            return Object.assign({}, state, {
+                active: {
+                    client: state.active.client,
+                    admin: action.id
+                }
+            });
+            break;
+        default:
+            return state;
     }
 }
