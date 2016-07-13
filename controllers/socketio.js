@@ -106,10 +106,8 @@ var findRemove = function (jsonArray, value) {
                 return true;
             }
         }
-        return false;
-    } else {
-        return false;
     }
+    return false;
 };
 
 module.exports = sio;
